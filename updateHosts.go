@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"encoding/json"
 	"flag"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -122,12 +123,25 @@ func main() {
 
 func Get(url string) string {
 	client := &http.Client{}
-	request, _ := http.NewRequest("GET", url, nil)
+	request, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		fmt.Println("Fatal error ", err.Error())
+		return ""
+	}
+	//Add 头协议
+	request.Header.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
+	request.Header.Add("Accept-Language", "ja,zh-CN;q=0.8,zh;q=0.6")
+	request.Header.Add("Connection", "keep-alive")
+	request.Header.Add("Cookie", "")
+	request.Header.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:12.0) Gecko/20100101 Firefox/12.0")
 	//接收服务端返回给客户端的信息
 	response, _ := client.Do(request)
+	defer response.Body.Close()
+
 	if response.StatusCode == 200 {
 		str, err := ioutil.ReadAll(response.Body)
 		if err != nil {
+			fmt.Println("Fatal error ", err.Error())
 			return ""
 		}
 		return string(str)
