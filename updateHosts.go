@@ -67,6 +67,9 @@ var filePath = "/etc/hosts"
 //该标识符之后的数据会被删掉，之前的数据保存下来。 可以自定义的hosts写在标识符之前
 var explodeString = "###################*******************"
 
+//接口api
+var apiUrl = "https://coding.net/api/user/scaffrey/project/hosts/git/blob/master/hosts-files/hosts"
+
 func ReadFile(path string) []string {
 	var data = []string{}
 	fi, err := os.Open(path)
@@ -105,7 +108,7 @@ func main() {
 
 	//解析接口数据
 	ApiArray := &ResultStruct{}
-	result := Get("https://coding.net/api/user/scaffrey/project/hosts/git/blob/master%252Fhosts-files%252Fhosts")
+	result := Get(apiUrl)
 	if result == "" {
 		panic("读取接口数据失败")
 	}
