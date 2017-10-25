@@ -118,7 +118,7 @@ func main() {
 	}
 	fd, _ := os.OpenFile(filePath, os.O_WRONLY|os.O_TRUNC|os.O_CREATE, os.ModePerm)
 	fd_time := time.Now().Format("2006-01-02 15:04:05")
-	fd_content := strings.Join(Data, "\n") + "\n" + fd_time + "\n" + ApiArray.Data.File.Data
+	fd_content := strings.Join(Data, "\n") + "\n" + "# "  + fd_time + "\n" + ApiArray.Data.File.Data
 	buf := []byte(fd_content)
 	fd.Write(buf)
 	fd.Close()
