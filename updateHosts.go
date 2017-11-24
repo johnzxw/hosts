@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"runtime"
 	"strings"
 	"time"
 )
@@ -62,7 +63,9 @@ type CommitterStruct struct {
 }
 
 //hosts文件位置
-var filePath = "/etc/hosts"
+var WinfilePath = "C:/Windows/System32/drivers/etc/HOSTS"
+var LinfilePath = "/etc/hosts"
+var filePath = ""
 
 //该标识符之后的数据会被删掉，之前的数据保存下来。 可以自定义的hosts写在标识符之前
 var explodeString = "###################*******************"
@@ -95,10 +98,13 @@ func ReadFile(path string) []string {
 
 //对filePath和explodeString进行初始化
 func InitConfig() {
-	filePathTmp := flag.String("F", filePath, "hosts文件位置")
 	explodeStringTmp := flag.String("E", explodeString, " 标识符")
 	flag.Parse()
-	filePath = *filePathTmp
+	if runtime.GOOS == "windows" {
+		filePath = WinfilePath
+	} else {
+		filePath = LinfilePath
+	}
 	explodeString = *explodeStringTmp
 
 }
@@ -116,9 +122,9 @@ func main() {
 	if err != nil {
 		panic("json 解析失败")
 	}
-	fd, _ := os.OpenFile(filePath, os.O_WRONLY|os.O_TRUNC|os.O_CREATE, os.ModePerm)
+	fd, _ := os.OpenFile(filePath, os.O_WRONLY | os.O_TRUNC | os.O_CREATE, os.ModePerm)
 	fd_time := time.Now().Format("2006-01-02 15:04:05")
-	fd_content := strings.Join(Data, "\n") + "\n" + "# "  + fd_time + "\n" + ApiArray.Data.File.Data
+	fd_content := strings.Join(Data, "\n") + "\n" + "# " + fd_time + "\n" + ApiArray.Data.File.Data
 	buf := []byte(fd_content)
 	fd.Write(buf)
 	fd.Close()
