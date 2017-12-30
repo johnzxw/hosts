@@ -11,4 +11,5 @@ $data        = implode("\n", $oldHosts);
 $data        .= $search . "\n\n";
 $data        .= '####' . date('Y-m-d H:i:s', time()) . "\n\n";
 $data        .= implode("\n", array_slice($fileContent, $key, count($fileContent)));
+
 file_put_contents($file, $data);
